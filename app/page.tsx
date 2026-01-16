@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { PointerEvent as ReactPointerEvent } from "react"
-import CategoriasShopping from "@/components/categorias-shopping"
 
 declare global {
   interface Window {
@@ -243,7 +242,6 @@ function AchadinhosCarousel({
       const kids = Array.from(el.children) as HTMLElement[]
       if (!kids.length) return
 
-      // encontra o card mais "próximo" do scroll atual
       const currentLeft = el.scrollLeft
       let nearestIndex = 0
       let nearestDist = Number.POSITIVE_INFINITY
@@ -260,7 +258,7 @@ function AchadinhosCarousel({
       el.scrollTo({ left: next.offsetLeft, behavior: "smooth" })
     }
 
-    const t = window.setInterval(tick, 2400) // mais "achadinho"
+    const t = window.setInterval(tick, 2300)
     return () => window.clearInterval(t)
   }, [isMobile])
 
@@ -341,7 +339,6 @@ function AchadinhosCarousel({
         ))}
       </div>
 
-      {/* fade nas bordas (cara de vitrine) */}
       {canScroll && (
         <>
           <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-[#050607] to-transparent" />
@@ -350,6 +347,15 @@ function AchadinhosCarousel({
       )}
     </div>
   )
+}
+
+type CategoryCard = {
+  id: string
+  title: string
+  subtitle: string
+  keyword: string
+  badge: string
+  img?: string
 }
 
 export default function Page({ searchParams }: PageProps) {
@@ -390,8 +396,9 @@ export default function Page({ searchParams }: PageProps) {
   )
 
   /**
-   * MVP: imagens sem texto em outra língua (você troca pelos links/Imagens finais depois)
-   * Observação: removi "básico".
+   * Achadinhos destaque (vitrine)
+   * - sem "básico"
+   * - casa sem cara de limpeza (trocar imagem depois; deixei placeholder seguro)
    */
   const achadinhos = useMemo(
     () => [
@@ -417,7 +424,7 @@ export default function Page({ searchParams }: PageProps) {
         note: "coisas que deixam a casa gostosa de estar.",
         badge: "Casa",
         url: "https://shopee.com.br",
-        img: "/images/lp-shopee-categoria-mercadoshopee.jpg",
+        img: "/placeholder.svg",
       },
       {
         id: "a4",
@@ -425,7 +432,98 @@ export default function Page({ searchParams }: PageProps) {
         note: "um mimo que levanta o astral na hora.",
         badge: "Beleza",
         url: "https://shopee.com.br",
-        img: "/images/lp-shopee-categoria-bemestar.jpg",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "a5",
+        title: "Moda que dá vontade",
+        note: "uma peça baratinha que muda tudo.",
+        badge: "Moda",
+        url: "https://shopee.com.br",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "a6",
+        title: "Brinquedos & Fofuras",
+        note: "um achado que vira presente na hora.",
+        badge: "Kids",
+        url: "https://shopee.com.br",
+        img: "/placeholder.svg",
+      },
+    ],
+    [],
+  )
+
+  /**
+   * Cards "estilo Shopee" (8 categorias prontas)
+   * - clique abre busca pronta na Shopee
+   * - evento de clique padronizado
+   */
+  const categorias = useMemo<CategoryCard[]>(
+    () => [
+      {
+        id: "c1",
+        title: "Beleza & Autocuidado",
+        subtitle: "um mimo fácil pra você se sentir melhor hoje.",
+        keyword: "beleza maquiagem skincare",
+        badge: "🔥 Vende muito",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "c2",
+        title: "Moda & Acessórios",
+        subtitle: "uma peça que você veste e já se sente outra pessoa.",
+        keyword: "moda feminina acessorios",
+        badge: "✨ Estilo",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "c3",
+        title: "Casa & Decoração",
+        subtitle: "coisas bonitas que dão prazer de ter em casa.",
+        keyword: "decoracao casa organizacao",
+        badge: "🏠 Casa gostosa",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "c4",
+        title: "Cozinha & Organização",
+        subtitle: "achados úteis que parecem caros — mas não são.",
+        keyword: "organizadores cozinha",
+        badge: "✅ Útil",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "c5",
+        title: "Tech & Gadgets",
+        subtitle: "coisas que você compra e já quer mostrar.",
+        keyword: "gadget fone bluetooth smartwatch",
+        badge: "⚡ Tech",
+        img: "/images/lp-shopee-categoria-tecnologia.jpg",
+      },
+      {
+        id: "c6",
+        title: "Volta às Aulas",
+        subtitle: "pra seu filho chegar diferente — e amar.",
+        keyword: "volta as aulas mochila estojo caderno",
+        badge: "🎒 Agora",
+        img: "/images/lp-shopee-categoria-voltaasaulas.jpg",
+      },
+      {
+        id: "c7",
+        title: "Fitness & Bem-estar",
+        subtitle: "leve e gostoso: academia, garrafa, acessórios.",
+        keyword: "acessorios academia garrafa squeeze",
+        badge: "💪 Leve",
+        img: "/placeholder.svg",
+      },
+      {
+        id: "c8",
+        title: "Pets",
+        subtitle: "um agrado pro seu pet… e pronto, você ganhou o dia.",
+        keyword: "acessorios pet",
+        badge: "🐾 Fofo",
+        img: "/placeholder.svg",
       },
     ],
     [],
@@ -471,6 +569,9 @@ export default function Page({ searchParams }: PageProps) {
                     "💛 Cupons ativos",
                     "⚡ Achadinhos relâmpago",
                     "🎉 Carnaval vem aí",
+                    "✨ Beleza",
+                    "🛍️ Moda",
+                    "🐾 Pets",
                   ].map((t, i) => (
                     <span
                       key={i}
@@ -485,6 +586,9 @@ export default function Page({ searchParams }: PageProps) {
                     "💛 Cupons ativos",
                     "⚡ Achadinhos relâmpago",
                     "🎉 Carnaval vem aí",
+                    "✨ Beleza",
+                    "🛍️ Moda",
+                    "🐾 Pets",
                   ].map((t, i) => (
                     <span
                       key={`dup-${i}`}
@@ -560,7 +664,7 @@ export default function Page({ searchParams }: PageProps) {
           </div>
         </section>
 
-        {/* AGORA / CARNAVAL VEM AÍ */}
+        {/* AGORA / CARNAVAL */}
         <section className="w-full py-10">
           <div className="max-w-6xl mx-auto px-6 md:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -585,15 +689,15 @@ export default function Page({ searchParams }: PageProps) {
                   ))}
                 </div>
 
-                <a
-                  href="https://shopee.com.br"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackShopeeClick({ type: "categoria", section: "agora_volta_aulas" })}
+                <button
+                  onClick={() => {
+                    trackShopeeClick({ type: "categoria", section: "agora_volta_aulas", keyword: "volta as aulas" })
+                    openShopeeSearch("volta as aulas mochila estojo caderno")
+                  }}
                   className="mt-5 inline-flex w-full items-center justify-center px-5 py-3 rounded-full bg-white/10 border border-white/15 text-white text-sm font-semibold hover:bg-white/15 transition-colors"
                 >
                   Ver achadinhos de Volta às Aulas →
-                </a>
+                </button>
 
                 <p className="mt-3 text-xs text-white/45">Os botões acima abrem uma busca pronta na Shopee.</p>
               </div>
@@ -621,15 +725,15 @@ export default function Page({ searchParams }: PageProps) {
                   ))}
                 </div>
 
-                <a
-                  href="https://shopee.com.br"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackShopeeClick({ type: "categoria", section: "carnaval" })}
+                <button
+                  onClick={() => {
+                    trackShopeeClick({ type: "categoria", section: "carnaval", keyword: "carnaval" })
+                    openShopeeSearch("carnaval glitter tiara fantasia acessorios")
+                  }}
                   className="mt-5 inline-flex w-full items-center justify-center px-5 py-3 rounded-full bg-white/10 border border-white/15 text-white text-sm font-semibold hover:bg-white/15 transition-colors"
                 >
                   Ver achadinhos de Carnaval →
-                </a>
+                </button>
 
                 <p className="mt-3 text-xs text-white/45">Os botões acima abrem uma busca pronta na Shopee.</p>
               </div>
@@ -637,18 +741,71 @@ export default function Page({ searchParams }: PageProps) {
           </div>
         </section>
 
-        {/* CATEGORIAS */}
-        <section className="w-full py-10">
+        {/* CATEGORIAS (8 cards, vibe Shopee) */}
+        <section className="w-full py-12">
           <div className="max-w-6xl mx-auto px-6 md:px-8">
-            <p className="text-xs text-white/60">ESCOLHA PELO QUE TE DÁ VONTADE</p>
-            <p className="mt-2 text-sm text-white/70">Um desses aqui pode ser o seu próximo achadinho.</p>
-          </div>
+            <h2 className="text-2xl md:text-3xl font-semibold">Comece pelo que você procura</h2>
+            <p className="mt-2 text-sm md:text-base text-white/70 max-w-2xl">
+              Escolhe uma e já vai pra Shopee no caminho mais curto.
+            </p>
 
-          <CategoriasShopping />
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {categorias.map((c) => (
+                <div
+                  key={c.id}
+                  className="bg-[#0c0d0e] border border-white/10 rounded-2xl overflow-hidden shadow-sm hover:translate-y-[-2px] transition-transform"
+                >
+                  <div className="relative">
+                    <div className="w-full aspect-[4/3] bg-black/40 overflow-hidden">
+                      <img src={c.img || "/placeholder.svg"} alt={c.title} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 border border-white/15 text-xs text-white/85">
+                      {c.badge}
+                    </div>
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="text-base font-semibold leading-snug">{c.title}</h3>
+                    <p className="mt-2 text-sm text-white/70">{c.subtitle}</p>
+
+                    <button
+                      onClick={() => {
+                        trackShopeeClick({
+                          type: "categoria",
+                          section: "comece_pelo_que_procura",
+                          category_id: c.id,
+                          keyword: c.keyword,
+                        })
+                        openShopeeSearch(c.keyword)
+                      }}
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 rounded-full bg-white/10 border border-white/15 text-white text-sm font-semibold hover:bg-white/15 transition-colors"
+                    >
+                      Ver na Shopee →
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-2">
+              {["cupom shopee", "frete grátis shopee", "oferta relâmpago shopee", "moedas shopee"].map((k) => (
+                <button
+                  key={k}
+                  onClick={() => {
+                    trackShopeeClick({ type: "busca", section: "chips_rapidos", keyword: k })
+                    openShopeeSearch(k)
+                  }}
+                  className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs text-white/80 hover:bg-white/10 transition-colors"
+                >
+                  {k} →
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* FINALIZAÇÃO — CUPONS */}
-        <section id="cupons" className="mt-24">
+        <section id="cupons" className="mt-10 pb-16">
           <div className="max-w-5xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-semibold mb-2">A Shopee pensou nos mínimos detalhes pra você.</h2>
             <p className="text-white/70 mb-10">Só vai. Agora é só ir tranquilo(a).</p>
@@ -674,7 +831,7 @@ export default function Page({ searchParams }: PageProps) {
               href="https://shopee.com.br"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackShopeeClick({ type: "cupom", section: "finalizacao_so_vai" })}
+              onClick={() => trackShopeeClick({ type: "cta_final", section: "finalizacao_so_vai" })}
               className="inline-flex items-center justify-center rounded-full bg-orange-500 text-black font-semibold px-10 py-4 text-lg hover:scale-105 transition"
             >
               Ir para a Shopee agora
